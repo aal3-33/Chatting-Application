@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+    }
+    #messages {
+      list-style-type: none;
+      padding: 0;
+    }
+    #messages li {
+      padding: 8px;
+      margin-bottom: 10px;
+      background-color: #1e1e1e;
+      border-radius: 5px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      background-color: #1e1e1e;
+      color: #ffffff;
+    }
+    button {
+      background-color: #6200ea;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3700b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="usernamePrompt">
+    <h1>Set A Username</h1>
+    <input id="usernameInput" autocomplete="off" placeholder="Enter your username..." />
+    <button id="setUsernameButton">Set Username</button>
+  </div>
+  <div id="chat" style="display: none;">
+    <h1>Chat App</h1>
+    <ul id="messages"></ul>
+    <input id="messageInput" autocomplete="off" placeholder="Type a message..." />
+    <button id="sendButton">Send</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const usernamePrompt = document.getElementById('usernamePrompt');
+    const usernameInput = document.getElementById('usernameInput');
+    const setUsernameButton = document.getElementById('setUsernameButton');
+    const chat = document.getElementById('chat');
+    const messagesList = document.getElementById('messages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+
+    let username = '';
+
+    setUsernameButton.addEventListener('click', setUsername);
+    usernameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        setUsername();
+      }
+    });
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    function setUsername() {
+      username = usernameInput.value.trim();
+      if (username) {
+        usernamePrompt.style.display = 'none';
+        chat.style.display = 'block';
+      }
+    }
+
+    socket.on('previousMessages', (messages) => {
+      messages.forEach((message) => {
+        addMessage(message);
+      });
+    });
+
+    socket.on('newMessage', (message) => {
+      addMessage(message);
+    });
+
+    function sendMessage() {
+      const message = messageInput.value.trim();
+      if (message && username) {
+        socket.emit('newMessage', { username, message });
+        messageInput.value = '';
+      }
+    }
+
+    function addMessage({ username, message }) {
+      const li = document.createElement('li');
+      li.textContent = `${username}: ${message}`;
+      messagesList.appendChild(li);
+    }
+  </script>
+</body>
+</html>
