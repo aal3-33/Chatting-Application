@@ -6,10 +6,14 @@ Simple Node.js application i made because i want to chat to my friends without g
 Before we start take a note
 This isnt going to work on vercel
 
-first of all make sure you have node.js and all the necessary node modules installed and then simply 
+first of all make sure you have node.js and all the necessary node modules installed and then simply run
 
-```run node server.js``` 
+```node server.js``` 
 
 if you want to host it continuously in a vps you can do 
 
 ```nohup node server.js &```
+
+Installing node modules
+
+```npm install express http socket.io```
