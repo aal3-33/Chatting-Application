@@ -8,12 +8,12 @@ This isnt going to work on vercel
 
 first of all make sure you have node.js and all the necessary node modules installed and then simply run
 
-```node server.js``` 
+``node server.js`` 
 
 if you want to host it continuously in a vps you can do 
 
-```nohup node server.js &```
+``nohup node server.js &``
 
 Installing node modules
 
-```npm install express http socket.io```
+``npm install express http socket.io``
